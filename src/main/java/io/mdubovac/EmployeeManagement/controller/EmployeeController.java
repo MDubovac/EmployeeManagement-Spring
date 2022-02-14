@@ -1,14 +1,19 @@
 package io.mdubovac.EmployeeManagement.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import io.mdubovac.EmployeeManagement.FileUploadUtil;
 import io.mdubovac.EmployeeManagement.model.Employee;
 import io.mdubovac.EmployeeManagement.service.DepartmentService;
 import io.mdubovac.EmployeeManagement.service.EmployeeService;
@@ -37,13 +42,22 @@ public class EmployeeController {
 	}
 	
 	@PostMapping("/employees/store")
-	public String store(Employee employee) {
+	public String store(Employee employee, @RequestParam("file") MultipartFile multipartFile) throws IOException {
+	
+		String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+		employee.setPhotos(fileName);
+	         
 		employeeService.save(employee);
+		
+		String uploadDir = "user-photos/" + employee.getId();
+		 
+        FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+		
 		return "redirect:/employees";
 	}
 	
 	@GetMapping("/employees/edit/{id}")
-	public String edit(@PathVariable Long id, Model model) {
+	public String edit(@PathVariable Long id, Model model) {		
 		model.addAttribute("employee", employeeService.getEmployeeById(id));
 		model.addAttribute("departmentList", departmentService.getAllDepartments());
 		return "employees/edit";

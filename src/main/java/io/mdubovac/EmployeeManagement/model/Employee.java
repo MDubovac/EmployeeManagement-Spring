@@ -1,5 +1,7 @@
 package io.mdubovac.EmployeeManagement.model;
 
+import java.beans.Transient;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -29,12 +31,15 @@ public class Employee {
 	
 	@ManyToOne
 	private Department department;
+	
+	 @Column(nullable = true)
+    private String photos;
 
 	// Constructors
 	public Employee() {
 		
 	}
-	public Employee(Long id, String firstName, String lastName, String email, String password, Department department) {
+	public Employee(Long id, String firstName, String lastName, String email, String password, Department department, String photos) {
 		super();
 		this.id = id;
 		this.firstName = firstName;
@@ -42,9 +47,11 @@ public class Employee {
 		this.email = email;
 		this.password = password;
 		this.department = department;
+		this.photos = photos;
 	}
 	
 	// Getters && Setters
+	
 	public Long getId() {
 		return id;
 	}
@@ -81,9 +88,23 @@ public class Employee {
 	public void setDepartment(Department department) {
 		this.department = department;
 	}
+	public String getPhotos() {
+		return photos;
+	}
+	public void setPhotos(String photos) {
+		this.photos = photos;
+	}
 	
 	// Get full name
 	public String getFullName() {
 		return this.firstName + " " + this.lastName;
 	}
+	
+	// Get Image path
+	@Transient
+    public String getPhotosImagePath() {
+        if (photos == null || id == null) return null;
+         
+        return "/user-photos/" + id + "/" + photos;
+    }
 }

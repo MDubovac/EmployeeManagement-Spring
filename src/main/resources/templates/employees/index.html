@@ -39,6 +39,7 @@
     	<thead>
     		<tr>
     			<th>Id</th>
+    			<th>Image</th>
     			<th>Name</th>
     			<th>Email Address</th>
     			<th>Department</th>
@@ -47,6 +48,9 @@
     	<tbody>
     		<tr th:each="item: ${employeeList}">
     			<td th:text="${item.id}"></td>
+    			<td>
+    				<img height="100px" th:src="${item.getPhotosImagePath()}" />
+    			</td>
     			<td th:text="${item.getFullName()}"></td>
     			<td th:text="${item.email}"></td>
     			<td th:text="${item.department.name}"></td>
