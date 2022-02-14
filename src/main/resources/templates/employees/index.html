@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>EmployeeManagement</title>
+	<!-- Bootstrap && FontAwesome CDNs -->
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} "/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container">
+  	<a class="navbar-brand" href="#">EmployeeManagement</a>
+  	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    	<span class="navbar-toggler-icon"></span>
+  	</button>
+
+  	<div class="collapse navbar-collapse" id="navbarSupportedContent">
+    	<ul class="navbar-nav ml-auto">
+    		<li class="nav-item">
+      			<a class="nav-link" th:href="@{/departments}">Departments</a>
+    		</li>
+    		<li class="nav-item">
+      			<a class="nav-link" th:href="@{/employees}">Employees</a>
+    		</li>
+    	</ul>
+  	</div>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container">
+	<h2 class="my-2">Employee List</h2>
+	<a th:href="@{/employees/new}" class="btn btn-outline-primary btn-sm my-2">
+		Add new
+	</a>
+    <table class="table table-hover table-bordered my-2">
+    	<thead>
+    		<tr>
+    			<th>Id</th>
+    			<th>Name</th>
+    			<th>Email Address</th>
+    			<th>Department</th>
+    		</tr>
+    	</thead>
+    	<tbody>
+    		<tr th:each="item: ${employeeList}">
+    			<td th:text="${item.id}"></td>
+    			<td th:text="${item.getFullName()}"></td>
+    			<td th:text="${item.email}"></td>
+    			<td th:text="${item.department.name}"></td>
+    			<td>
+    				<a th:href="@{/employees/edit/{id} (id = ${item.id})}" class="btn btn-outline-primary btn-sm my-1">
+    					<i class="fa fa-edit"></i>
+    					Edit
+   					</a>
+    				<a th:href="@{/employees/delete/{id} (id = ${item.id})}" class="btn btn-outline-danger btn-sm my-1">
+    					<i class="fa fa-trash"></i>
+    					Delete
+   					</a>
+    			</td>
+    		</tr>
+    	</tbody>
+    </table>
+</div>
+
+<!-- Scripts -->
+<script th:src="@{/webjars/jquery/3.0.0/jquery.min.js}"></script>
+<script th:src="@{/webjars/popper.js/1.12.9-1/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.0.0-2/js/bootstrap.min.js}"></script>
+
+</body>
+</html>

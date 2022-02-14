@@ -81,4 +81,9 @@ public class Employee {
 	public void setDepartment(Department department) {
 		this.department = department;
 	}
+	
+	// Get full name
+	public String getFullName() {
+		return this.firstName + " " + this.lastName;
+	}
 }
