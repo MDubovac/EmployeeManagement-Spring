@@ -1,8 +1,10 @@
 package io.mdubovac.EmployeeManagement.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -50,7 +52,6 @@ public class EmployeeController {
 		employeeService.save(employee);
 		
 		String uploadDir = "user-photos/" + employee.getId();
-		 
         FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
 		
 		return "redirect:/employees";
@@ -75,9 +76,41 @@ public class EmployeeController {
 		return "redirect:/employees";
 	}
 	
+	@PostMapping("/employees/change_image/{id}")
+	public String changeImage(@PathVariable Long id, Employee employee, @RequestParam("file") MultipartFile multipartFile) throws IOException {
+		// Get current employee
+		Employee currentEmployee = (Employee) employeeService.getEmployeeById(id);
+		
+		// Handle Image
+		String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+		
+		// Delete current image
+		File file = new File("user-photos/" + employee.getId() + "/" + currentEmployee.getPhotos());
+		file.delete();
+		
+		// Set new image
+		currentEmployee.setPhotos(fileName);
+		
+		// Upload image
+		String uploadDir = "user-photos/" + employee.getId();
+		FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);	
+		
+		employeeService.save(currentEmployee);
+		return "redirect:/employees)";
+	}
+	
 	@GetMapping("/employees/delete/{id}")
-	public String delete(@PathVariable Long id) {
-		employeeService.deleteEmployee(id);
+	public String delete(@PathVariable Long id) throws IOException {
+		// Get current Employee
+		Employee currentEmployee = (Employee) employeeService.getEmployeeById(id);
+		
+		// Delete image from user-photos directory
+		File file = new File("user-photos/" + currentEmployee.getId());
+		FileUtils.deleteDirectory(new File(file.getPath()));
+	
+		// Delete employee
+		employeeService.deleteEmployee(currentEmployee.getId());	
+		
 		return "redirect:/employees";
 	}
 }
